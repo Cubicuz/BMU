@@ -1,22 +1,9 @@
 #ifndef LAB04_H_INCLUDED
 #define LAB04_H_INCLUDED
 
-#ifdef __WIN32__
-#include <opencv2\opencv.hpp>
-#include <opencv2\core\core.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
-#else
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#endif // __linux__
+#include "headers.h"
 
-#include <iostream>
-
-using namespace std;
-using namespace cv;
-
-int8_t lab04_createSegmentMat(&Mat blackWhite, &Mat segmenting){
+int8_t lab04_createSegmentMat(Mat* blackWhite, Mat* segmenting){
     uint32_t segmentCounter = 0;
     for (uint64_t x=0;x<blackWhite->rows; x++){
         for (uint64_t y=0;y<blackWhite->cols;y++){
@@ -61,7 +48,7 @@ int8_t lab04_createSegmentMat(&Mat blackWhite, &Mat segmenting){
     }
 };
 
-void lab04_minimizeSegments(&Mat segmentMat){
+void lab04_minimizeSegments(Mat* segmentMat){
     uint16_t posNow, posCheck;
     int8_t didSomethingChange = 1;
     while (didSomethingChange == 1){

@@ -348,10 +348,11 @@ obj/
 # By default, sensitive information, such as encrypted password
 # should be stored in the .pubxml.user file.
 
-eBlocks ###
+#CodeBlocks ###
 # specific to CodeBlocks IDE
 *.layout
 *.depend
+*.cbp
 
 # generated directories
 bin/

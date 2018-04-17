@@ -1,21 +1,7 @@
 #ifndef LAB03_H_INCLUDED
 #define LAB03_H_INCLUDED
 
-#ifdef __WIN32__
-#include <opencv2\opencv.hpp>
-#include <opencv2\core\core.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
-#else
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#endif // __linux__
-
-#include <iostream>
-#include <string>
-
-using namespace std;
-using namespace cv;
+#include "headers.h"
 
 void substract(Mat* inMinuent, Mat* inSubtrahent, Mat* outDifferenz){
     for (int x=0; x<inMinuent->rows;x++){

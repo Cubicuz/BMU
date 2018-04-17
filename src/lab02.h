@@ -1,21 +1,7 @@
 #ifndef LAB02_H_INCLUDED
 #define LAB02_H_INCLUDED
 
-#ifdef __WIN32__
-#include <opencv2\opencv.hpp>
-#include <opencv2\core\core.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
-#else
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#endif // __linux__
-
-#include <iostream>
-
-using namespace std;
-using namespace cv;
-
+#include "headers.h"
 
 void lab02(){
 	VideoCapture cap(0);
