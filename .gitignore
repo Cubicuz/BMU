@@ -334,10 +334,28 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
+
+### CodeBlocks ###
+# specific to CodeBlocks IDE
+*.layout
+*.depend
+
+# generated directories
+bin/
+obj/
+
 ### VisualStudio Patch ###
 # By default, sensitive information, such as encrypted password
 # should be stored in the .pubxml.user file.
 
+eBlocks ###
+# specific to CodeBlocks IDE
+*.layout
+*.depend
+
+# generated directories
+bin/
+obj/
 
 # End of https://www.gitignore.io/api/c++,opencv,visualstudio
 
