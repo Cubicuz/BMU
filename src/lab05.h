@@ -40,6 +40,16 @@ int translationScaling(Mat* source, Mat* target, int64_t xOffset, int64_t yOffse
     }
 };
 
+/*
+void rotation(Mat* source, Mat* target ){
+    float xSource, ySource;
+    for (int64_t x=0; x<target->rows;x++){
+        for (int64_t y=0; y<target->cols;y++){
+
+        }
+    }
+}
+*/
 
 
 void lab05_transformation(){

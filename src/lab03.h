@@ -18,7 +18,7 @@ void substract(Mat* inMinuent, Mat* inSubtrahent, Mat* outDifferenz){
 
 
 void lab03_histogram(){
-    	VideoCapture cap(0);
+   	VideoCapture cap(0);
 
 	if(!cap.isOpened()){
 		cout << "Keine Kamera" << endl;

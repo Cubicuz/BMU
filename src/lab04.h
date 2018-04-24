@@ -3,7 +3,7 @@
 
 #include "headers.h"
 
-int8_t lab04_createSegmentMat(Mat* blackWhite, Mat* segmenting){
+void lab04_createSegmentMat(Mat* blackWhite, Mat* segmenting){
     uint32_t segmentCounter = 0;
     for (uint64_t x=0;x<blackWhite->rows; x++){
         for (uint64_t y=0;y<blackWhite->cols;y++){

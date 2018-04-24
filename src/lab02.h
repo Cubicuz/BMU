@@ -3,7 +3,7 @@
 
 #include "headers.h"
 
-void lab02(){
+void lab02_sobelFilter(){
 	VideoCapture cap(0);
 
 	if(!cap.isOpened()){
@@ -29,7 +29,6 @@ void lab02(){
 	namedWindow("Display window", WINDOW_AUTOSIZE);
 
 	for(;;){
-
 		// acquire camera image
 		cap >> img;
 
