@@ -10,6 +10,29 @@ bool compareArea(KeyPoint a, KeyPoint b){
     return a.size > b.size;
 }
 
+Mat calcTransformationMatrix(Point2f r[2], Point2f b[2]){
+    double A, B, tx, ty;
+
+    // A = ((x1-x2)*(x1d-x2d)+(y1-y2)*(y1d-y2d))/((y1d-y2d)*(y1d-y2d) + (x1d-x2d)*(x1d-x2d))
+    A = ((r[0].x-r[2].x)*(b[0].x-b[1].x)+(r[1].y-r[2].y)*(b[0].y-b[1].y))/((b[0].y-b[1].y)*(b[0].y-b[1].y) + (b[0].x-b[1].x)*(b[0].x-b[1].x));
+    B = (r[0].x - r[1].x)/(b[1].y - b[0].y) - A*(b[0].x - b[1].x)/(b[1].y - b[0].y);
+
+    tx = r[0].x - b[0].x * A + b[0].y * B;
+    ty = r[0].y - b[0].x * B - b[0].y * A;
+
+    Mat result(3, 3, CV_32FC1);
+    result.at<float>(0, 0) = (float) A;
+    result.at<float>(0, 1) = (float) -B;
+    result.at<float>(0, 2) = (float) tx;
+    result.at<float>(1, 0) = (float) B;
+    result.at<float>(1, 1) = (float) A;
+    result.at<float>(1, 2) = (float) ty;
+    result.at<float>(2, 2) = (float) 1;
+
+    return result;
+}
+
+
 void lab_06(void){
    	VideoCapture cap(0);
 
@@ -19,16 +42,25 @@ void lab_06(void){
 	int key;
 	double factor(1);
 	Mat img;
-	Mat gray, blackwhite;
-	Mat screenShot;
 	cap >> img;
+	Mat gray(img.rows, img.cols, CV_8UC1);
+	Mat blackwhite(img.rows, img.cols, CV_8UC1);
+	Mat screenShot;
     bool firstRun = true;
     SimpleBlobDetector::Params params;
     params.minArea = 100;
-    params.maxArea = 60000;
+    params.maxArea = 10000000;
     params.filterByArea = true;
+    params.filterByCircularity = false;
+    params.blobColor = 0;
+    params.filterByConvexity = false;
+    params.filterByInertia = false;
+    params.minDistBetweenBlobs = 10;
 
-    vector<KeyPoint> kp;
+
+    vector<KeyPoint> blobPoints, refPoints;
+    Point2f blobPointer[2];
+    Point2f refPointer[2];
 
 
     SimpleBlobDetector blobDetector;
@@ -49,31 +81,65 @@ void lab_06(void){
 		// convert img -> gray
 		cvtColor(img, gray, CV_BGR2GRAY);
 
+        // convert gray -> blackWhite
+        cvtGrayToBW(gray, blackwhite);
+
+        cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
+        detector->detect( img, blobPoints );
+        sort(blobPoints.begin(), blobPoints.end(), compareArea);
+        for (int i=0;i<2;i++){
+            circle(gray, blobPoints[i].pt, 5,Scalar(255, 255, 255));//, int thickness=1, int lineType=LINE_8, int shift=0 );
+        }
 
 
 		// display image on screen
         imshow("original", gray);
 
+		// berechnung der Translationsmatrix
+		if (!firstRun){
+            imshow("screenshot", screenShot);
+            cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
+            detector->detect( img, blobPoints );
+            sort(blobPoints.begin(), blobPoints.end(), compareArea);
+
+            blobPointer[0] = blobPoints[0].pt;
+            blobPointer[1] = blobPoints[1].pt;
+            Mat transMatrix = calcTransformationMatrix(refPointer, blobPointer);
+
+            Mat transImage(gray.size(), gray.type());
+
+            warpPerspective(img, transImage, transMatrix, transImage.size());
+
+            for (int i=0;i<2;i++){
+                circle(transImage, blobPoints[i].pt, 5,Scalar(0, 255, 0));//, int thickness=1, int lineType=LINE_8, int shift=0 );
+            }
+
+            imshow("blobs", transImage);
+
+
+		}
 
 
 		// wait 30ms for key
 		key = waitKey(30);
 		if (key == -1){			//do nothing
 
-		} else if(key>=97){		//set brightness
+		} else if(key>=97){		//referenzbild erzeugen
             firstRun = false;
             screenShot = gray.clone();
+            cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create(params);
+            detector->detect( screenShot, refPoints );
+            sort(refPoints.begin(), refPoints.end(), compareArea);
+            refPointer[0] = refPoints[0].pt;
+            refPointer[1] = refPoints[1].pt;
+            for (int i=0;i<2;i++){
+                circle(screenShot, refPoints[i].pt, 5,Scalar(255, 255, 255));//, int thickness=1, int lineType=LINE_8, int shift=0 );
+            }
 
         } else {				//close
 			break;
 		}
 
-		// berechnung der Translationsmatrix
-		if (!firstRun){
-            imshow("screenshot", screenShot);
-            blobDetector.detect(gray, kp);
-            sort(kp.begin(), kp.end(), compareArea);
-		}
 	}
 
 
