@@ -10,11 +10,16 @@ bool compareArea(KeyPoint a, KeyPoint b){
     return a.size > b.size;
 }
 
-Mat calcTransformationMatrix(Point2f r[2], Point2f b[2]){
-    double A, B, tx, ty;
+Mat calcTransformationMatrix(vector<Point2f> r, vector<Point2f> b){
+    double A, B, tx, ty, z, n;
 
     // A = ((x1-x2)*(x1d-x2d)+(y1-y2)*(y1d-y2d))/((y1d-y2d)*(y1d-y2d) + (x1d-x2d)*(x1d-x2d))
-    A = ((r[0].x-r[2].x)*(b[0].x-b[1].x)+(r[1].y-r[2].y)*(b[0].y-b[1].y))/((b[0].y-b[1].y)*(b[0].y-b[1].y) + (b[0].x-b[1].x)*(b[0].x-b[1].x));
+    z = (r[0].x-r[1].x) * (b[0].x-b[1].x) + (r[0].y-r[1].y) * (b[0].y-b[1].y);
+    n = (b[0].y-b[1].y) * (b[0].y-b[1].y) + (b[0].x-b[1].x) * (b[0].x-b[1].x);
+
+
+//    A = ((r[0].x-r[2].x)*(b[0].x-b[1].x)+(r[1].y-r[2].y)*(b[0].y-b[1].y))/((b[0].y-b[1].y)*(b[0].y-b[1].y) + (b[0].x-b[1].x)*(b[0].x-b[1].x));
+    A = z/n;
     B = (r[0].x - r[1].x)/(b[1].y - b[0].y) - A*(b[0].x - b[1].x)/(b[1].y - b[0].y);
 
     tx = r[0].x - b[0].x * A + b[0].y * B;
@@ -27,8 +32,12 @@ Mat calcTransformationMatrix(Point2f r[2], Point2f b[2]){
     result.at<float>(1, 0) = (float) B;
     result.at<float>(1, 1) = (float) A;
     result.at<float>(1, 2) = (float) ty;
+    result.at<float>(2, 0) = (float) 0;
+    result.at<float>(2, 1) = (float) 0;
     result.at<float>(2, 2) = (float) 1;
-
+    cout << "[" << result.at<float>(0, 0) << "|" << result.at<float>(0, 1) << "|" << result.at<float>(0, 2) << "]" << endl;
+    cout << "[" << result.at<float>(1, 0) << "|" << result.at<float>(1, 1) << "|" << result.at<float>(1, 2) << "]" << endl;
+    cout << "[" << result.at<float>(2, 0) << "|" << result.at<float>(2, 1) << "|" << result.at<float>(2, 2) << "]" << endl;
     return result;
 }
 
@@ -59,8 +68,8 @@ void lab_06(void){
 
 
     vector<KeyPoint> blobPoints, refPoints;
-    Point2f blobPointer[2];
-    Point2f refPointer[2];
+    vector<Point2f> blobPointer(2);
+    vector<Point2f> refPointer(2);
 
 
     SimpleBlobDetector blobDetector;
@@ -104,6 +113,7 @@ void lab_06(void){
 
             blobPointer[0] = blobPoints[0].pt;
             blobPointer[1] = blobPoints[1].pt;
+            //Mat transMatrix = cv::estimateAffine2D(refPointer, blobPointer);
             Mat transMatrix = calcTransformationMatrix(refPointer, blobPointer);
 
             Mat transImage(gray.size(), gray.type());
