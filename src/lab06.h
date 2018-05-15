@@ -10,7 +10,7 @@ bool compareArea(KeyPoint a, KeyPoint b){
     return a.size > b.size;
 }
 
-Mat calcTransformationMatrix(vector<Point2f> r, vector<Point2f> b){
+Mat calcSimilarityMatrix(vector<Point2f> r, vector<Point2f> b){
     double A, B, tx, ty, z, n;
 
     // A = ((x1-x2)*(x1d-x2d)+(y1-y2)*(y1d-y2d))/((y1d-y2d)*(y1d-y2d) + (x1d-x2d)*(x1d-x2d))
@@ -114,7 +114,7 @@ void lab_06(void){
             blobPointer[0] = blobPoints[0].pt;
             blobPointer[1] = blobPoints[1].pt;
             //Mat transMatrix = cv::estimateAffine2D(refPointer, blobPointer);
-            Mat transMatrix = calcTransformationMatrix(refPointer, blobPointer);
+            Mat transMatrix = calcSimilarityMatrix(refPointer, blobPointer);
 
             Mat transImage(gray.size(), gray.type());
 
