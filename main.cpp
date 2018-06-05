@@ -18,7 +18,7 @@
 using namespace std;
 using namespace cv;
 
-int main(){
+int maino(){
     lab_07();
 
 }
